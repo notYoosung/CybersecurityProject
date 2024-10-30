@@ -22,31 +22,32 @@
 ## Author: ble1 <ble1@PE-303-01>
 ## Created: 2024-10-28
 
-function[Encoded] = Encode(String, Rotation)
+function[EncodedCell] = Encode(Cell, Rotation)
+EncodedCell = {}
 
-%String = input('String to encode: ', 's');
+%Cell = input('Cell to encode: ', 's');
 %Rotation = input('Amount of rotation: ');
+for i = 1:size(Cell, 2)
+  String = Cell{1, i}
+  for j = 1:length(String)
+    fprintf('index: %0.0f, %0.0f\n', i, j)
+    ASCIICode = double(String(j));
 
-EncodedString = '';
+    if ASCIICode >= 65 && ASCIICode <= 90 % Uppercase
+        ASCIIRotated = 65 + mod(ASCIICode - 64, 90-65);
+    elseif ASCIICode >= 97 && ASCIICode <= 122 % Lowercase
+        ASCIIRotated = 97 + mod(ASCIICode - 96, 122-97);
+    elseif ASCIICode >= 48 && ASCIICode <= 57 % Numbers
+        ASCIIRotated = 48 + mod(ASCIICode - 47, 57-48);
+    else
+        ASCIIRotated = ASCIICode
+    endif
 
-for i = 1:length(String)
+    EncodedCell{1, i}(j) = char(ASCIIRotated);
 
-  ASCIICode = double(String(i));
-
-  if ASCIICode >= 65 && ASCIICode <= 90 % Uppercase
-      ASCIIRotated = 65 + mod(ASCIICode - 64, 90-65);
-  elseif ASCIICode >= 97 && ASCIICode <= 122 % Lowercase
-      ASCIIRotated = 97 + mod(ASCIICode - 96, 122-97);
-  elseif ASCIICode >= 48 && ASCIICode <= 57 % Numbers
-      ASCIIRotated = 48 + mod(ASCIICode - 47, 57-48);
-  else
-      ASCIIRotated = ASCIICode
-  endif
-
-  EncodedString(i) = char(ASCIIRotated);
+  endfor
 
 endfor
 
-%disp(['Encoded String: ' EncodedString])
-Encoded = EncodedString;
+%disp(['Encoded Cell: ' EncodedString])
 endfunction

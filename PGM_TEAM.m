@@ -12,66 +12,41 @@ Sheet = {...
   'LUKE SKYWALKER', 'Male', '1965-11-05', '2', 'Grass, Mold', 'Zocor, Daforce';
   'LEIA ORGANA', 'Female', '1973-10-13', '0', 'None', 'None';
   'HAN SOLO', 'Male', '1965-12-15', '1', 'Carbonite, Wookie dander', 'Cymbalta',
-}
-xlswrite('Cybersecurity.xlsx', Sheet)
-
-S = size(Sheet)
-
-
-%{
-    'Patient', 'LUKE SKYWALKER',
-    'Gender', 'Male',
-    'DOB', '1965-11-05',
-    'Children', '2',
-    'Allergies', 'Grass, Mold',
-    'Prescriptions', 'Zocor, Daforce'
-  ),
-  struct(
-    'Patient', 'LEIA ORGANA',
-    'Gender', 'Female',
-    'DOB', '1973-10-13',
-    'Children', '0',
-    'Allergies', 'None',
-    'Prescriptions', 'None'
-  ),
-  struct(
-    'Patient', 'HAN SOLO',
-    'Gender', 'Male',
-    'DOB', '1965-12-15',
-    'Children', '1',
-    'Allergies', 'Carbonite, Wookie dander',
-    'Prescriptions', 'Cymbalta'
-  ),
 };
-%}
-%xlswrite('Patients.xlsx', InitialPatients);
+xlswrite('Cybersecurity.xlsx', Sheet);
+
+S = size(Sheet);
+
 
 %Crete a new patient or read patient data
 
+
+% function[] = PGM_TEAM()
 Option = questdlg('Create or read patient data? ', 'Menu', 'Create', 'Read', 'Read');
-Option = 'Read'
 switch Option
   case 'Create'
 
     prompts = {'Patient' 'Gender' 'DOB' 'Children' 'Allergies' 'Prescriptions'};
     PatientData = inputdlg(prompts, 'Create Patient');
-    xlswrite('Patients.xlsx', PatientData');
+    % xlswrite('Patients.xlsx', );
+    % xlswrite('Patients.xlsx', 'Encoded', );
+    Rotation = randi(26)
+    EncodedCell = Encode(PatientData, Rotation)
+    disp(EncodedCell)
+
   case 'Read'
     d = dir;
-    patients = Sheet(2:size(Sheet, 1), 1)
+    patients = Sheet(2:size(Sheet, 1), 1);
     [indx, isSelected] = listdlg('Name', 'Patient Selection', ...
         'PromptString', {'Select a patient.'}, ...
         'SelectionMode', 'single', ...
         'ListString', patients);
-    indx = [2]
-    if ~isSelected
+    if isSelected
         for i = 2:size(Sheet, 1)
-            disp(i)
             if indx[1] == i+1
-                disp(Sheet(i, :))
                 fprintf('Patient Data:\n')
                 for j = 1:size(Sheet, 2)
-                    fprintf('\t%s:\t %s\n', char(Sheet(1, j)), char(Sheet(i, j)))
+                    fprintf('\t%10s:\t %s\n', char(Sheet(1, j)), char(Sheet(i, j)))
                 endfor
                 break
             endif
@@ -80,6 +55,8 @@ switch Option
         fprintf('exited')
     endif
 endswitch
+
+% endfunction
 
 
 %CybersecurityA('abc', 1)
