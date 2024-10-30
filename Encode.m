@@ -23,31 +23,32 @@
 ## Created: 2024-10-28
 
 function[EncodedCell] = Encode(Cell, Rotation)
-EncodedCell = {}
+EncodedCell = {};
 
 %Cell = input('Cell to encode: ', 's');
 %Rotation = input('Amount of rotation: ');
-for i = 1:size(Cell, 2)
-  String = Cell{1, i}
+for i = 1:size(Cell, 1)
+
+  String = Cell{i, 1};
+  if length(String) == 0
+    continue
+  end
   for j = 1:length(String)
-    fprintf('index: %0.0f, %0.0f\n', i, j)
     ASCIICode = double(String(j));
 
     if ASCIICode >= 65 && ASCIICode <= 90 % Uppercase
-        ASCIIRotated = 65 + mod(ASCIICode - 64, 90-65);
+        ASCIIRotated = 65 + mod(ASCIICode + Rotation - 65, 26);
     elseif ASCIICode >= 97 && ASCIICode <= 122 % Lowercase
-        ASCIIRotated = 97 + mod(ASCIICode - 96, 122-97);
+        ASCIIRotated = 97 + mod(ASCIICode + Rotation - 97, 26);
     elseif ASCIICode >= 48 && ASCIICode <= 57 % Numbers
-        ASCIIRotated = 48 + mod(ASCIICode - 47, 57-48);
+        ASCIIRotated = 48 + mod(ASCIICode + Rotation - 48, 26);
     else
-        ASCIIRotated = ASCIICode
+        ASCIIRotated = ASCIICode;
     endif
 
-    EncodedCell{1, i}(j) = char(ASCIIRotated);
+    EncodedCell{i, 1}(j) = char(ASCIIRotated);
 
-  endfor
+  end
+end
 
-endfor
-
-%disp(['Encoded Cell: ' EncodedString])
 endfunction

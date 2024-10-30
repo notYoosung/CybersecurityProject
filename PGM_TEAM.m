@@ -8,14 +8,15 @@ pkg load io;
 
 
 Sheet = {...
-  'Patient', 'Gender', 'DOB', 'Children', 'Allergies', 'Prescriptions';
-  'LUKE SKYWALKER', 'Male', '1965-11-05', '2', 'Grass, Mold', 'Zocor, Daforce';
-  'LEIA ORGANA', 'Female', '1973-10-13', '0', 'None', 'None';
-  'HAN SOLO', 'Male', '1965-12-15', '1', 'Carbonite, Wookie dander', 'Cymbalta',
+  'Patient', 'LUKE SKYWALKER', 'LEIA ORGANA', 'HAN SOLO';
+  'Gender', 'Male', 'Female', 'Male';
+  'DOB', '1965-11-05', '1973-10-13', '1965-12-15';
+  'Children', '2', '0', '1';
+  'Allergies', 'Grass, Mold', 'None', 'Carbonite, Wookie dander';
+  'Prescriptions', 'Zocor, Daforce', 'None', 'Cymbalta';
 };
 xlswrite('Cybersecurity.xlsx', Sheet);
 
-S = size(Sheet);
 
 
 %Crete a new patient or read patient data
@@ -30,9 +31,10 @@ switch Option
     PatientData = inputdlg(prompts, 'Create Patient');
     % xlswrite('Patients.xlsx', );
     % xlswrite('Patients.xlsx', 'Encoded', );
-    Rotation = randi(26)
+    Rotation = randi(26);
     EncodedCell = Encode(PatientData, Rotation)
-    disp(EncodedCell)
+    xlswrite('Cybersecurity.xlsx', EncodedCell, 'Encoded (A)');
+
 
   case 'Read'
     d = dir;
@@ -60,3 +62,7 @@ endswitch
 
 
 %CybersecurityA('abc', 1)
+
+%{
+start "C:\Users\ble1\AppData\Local\Programs\GNU Octave\Octave-9.2.0\mingw64\bin\octave-cli.exe"
+%}

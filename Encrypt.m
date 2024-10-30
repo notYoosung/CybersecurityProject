@@ -1,6 +1,6 @@
-function [Encrypted, EncryptedKey] = Encrypt(String)
+function [Encrypted, EncryptedKey] = Encrypt(Cell)
 
-%String = input('String to encode: ', 's');
+%Cell = input('Cell to encode: ', 's');
 
 ASCIIUpper = [65:90];
 ASCIILower = [97:122];
@@ -11,7 +11,7 @@ EncryptedText = '';
 
 Key = [];
 CurrIndex = 1;
-for i = 1:length(String)
+for i = 1:length(Cell)
   SepLen = randi(10);
   for Sep = 1:SepLen
       EncryptedText(CurrIndex) = CharPool(randi(length(CharPool)));
@@ -20,7 +20,7 @@ for i = 1:length(String)
 
 
 
-  EncryptedText(CurrIndex) = String(i);
+  EncryptedText(CurrIndex) = Cell(i);
   Key(length(Key) + 1) = CurrIndex;
   CurrIndex = CurrIndex + 1;
 
