@@ -1,7 +1,5 @@
 function [Encrypted, EncryptedKey] = Encrypt(Cell)
 
-%Cell = input('Cell to encode: ', 's');
-
 ASCIIUpper = [65:90];
 ASCIILower = [97:122];
 ASCIINumber = [48:57];

@@ -27,12 +27,14 @@ EncodedCell = {};
 
 %Cell = input('Cell to encode: ', 's');
 %Rotation = input('Amount of rotation: ');
-for i = 1:size(Cell, 1)
+for i = 1:size(Cell, 2)
+    disp(size(Cell, 2))
 
-  String = Cell{i, 1};
+  String = Cell{1, i};
   if length(String) == 0
     continue
   end
+  EncodedCell{1, i} = '';
   for j = 1:length(String)
     ASCIICode = double(String(j));
 
@@ -46,7 +48,7 @@ for i = 1:size(Cell, 1)
         ASCIIRotated = ASCIICode;
     endif
 
-    EncodedCell{i, 1}(j) = char(ASCIIRotated);
+    EncodedCell{1, i}(j) = char(ASCIIRotated);
 
   end
 end
