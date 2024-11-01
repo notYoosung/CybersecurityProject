@@ -15,16 +15,15 @@ for iCell = 1:size(Cell, 2)
 
   Key = [];
   CurrIndex = 1;
-  for i = 1:size(Cell, 2)
+  for i = 1:size(Cell{1, iCell}, 2)
     SepLen = randi(10);
     for Sep = 1:SepLen
         EncryptedText(CurrIndex) = CharPool(randi(length(CharPool)));
         CurrIndex = CurrIndex + 1;
     endfor
 
-
-    EncryptedText(CurrIndex) = Cell(1, iCell){1, i};
-    Key(length(Key) + 1) = CurrIndex;
+    EncryptedText(CurrIndex) = Cell{1, iCell}(i);
+    Key(1, size(Key, 2) + 1) = CurrIndex;
     CurrIndex = CurrIndex + 1;
 
   endfor

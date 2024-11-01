@@ -25,11 +25,7 @@
 function[EncodedCell] = Encode(Cell, Rotation)
 EncodedCell = {};
 
-%Cell = input('Cell to encode: ', 's');
-%Rotation = input('Amount of rotation: ');
 for i = 1:size(Cell, 2)
-    disp(size(Cell, 2))
-
   String = Cell{1, i};
   if length(String) == 0
     continue
