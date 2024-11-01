@@ -13,7 +13,7 @@ for iCell = 1:size(Cell, 2)
 
   EncryptedText = '';
 
-  Key = [];
+  Key = {};
   CurrIndex = 1;
   for i = 1:size(Cell{1, iCell}, 2)
     SepLen = randi(10);
@@ -23,7 +23,7 @@ for iCell = 1:size(Cell, 2)
     endfor
 
     EncryptedText(CurrIndex) = Cell{1, iCell}(i);
-    Key(1, size(Key, 2) + 1) = CurrIndex;
+    Key{1, size(Key, 2) + 1} = CurrIndex;
     CurrIndex = CurrIndex + 1;
 
   endfor
