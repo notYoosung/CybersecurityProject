@@ -32,8 +32,8 @@ function [] = PGM_TEAM()
 
     function [] = WriteEncoded(Cell)
         [encoded, keys] = Encoder_TEAM(Sheet(:, Cell)');
-        Sheet(1:dataamt, Cell) = encoded;
-        Sheet((dataamt + 1):(2 * dataamt), Cell) = keys;
+        Sheet((1 + dataamt):(dataamt*2), Cell) = encoded;
+        Sheet((dataamt*2 + 1):(2 * dataamt), Cell) = keys;
     endfunction
 
     function Cell = ReadEncoded(ColumnN)

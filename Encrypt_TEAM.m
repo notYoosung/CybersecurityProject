@@ -1,4 +1,4 @@
-function [EncryptedCell, EncryptedCellKeys] = Encrypt(Cell)
+function [EncryptedCell, EncryptedCellKeys] = Encrypt_TEAM(Cell)
 EncryptedCell = {};
 EncryptedCellKeys = {};
 

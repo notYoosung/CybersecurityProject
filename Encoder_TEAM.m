@@ -22,7 +22,7 @@
 ## Author: ble1 <ble1@PE-303-01>
 ## Created: 2024-10-28
 
-function [EncodedCell, RotationCell] = Encode(Cell)
+function [EncodedCell, RotationCell] = Encoder_TEAM(Cell)
     EncodedCell = {};
     RotationCell = {};
 
