@@ -1,4 +1,4 @@
-function[DecryptedCell] = Decode(EncryptedCell, KeyCell)
+function [DecryptedCell] = Decoder_TEAM(EncryptedCell, KeyCell)
 DecryptedCell = {};
 for i = 1:size(EncryptedCell, 2)
     DecryptedCell{1, i} = '';
