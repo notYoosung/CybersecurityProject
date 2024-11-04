@@ -41,7 +41,7 @@ function[] = WriteEncoded(Cell)
 
 endfunction
 function Cell = ReadEncoded(ColumnN)
-    Cell = Decoder _TEAM(SheetEncoded(1:dataamt, ColumnN)', SheetEncoded((dataamt+1):(2*dataamt), ColumnN)');
+    Cell = Decoder_TEAM(SheetEncoded(1:dataamt, ColumnN)', SheetEncoded((dataamt+1):(2*dataamt), ColumnN)');
 endfunction
 
 m = ReadEncoded(2)
