@@ -31,7 +31,7 @@ SheetEncoded = { 'Patient'; 'Gender'; 'DOB'; 'Children'; 'Allergies'; 'Prescript
 dataamt = size(Sheet, 1);
 
 for i = 2:(size(Sheet)-2)
-    [encoded, keys] = Encode(Sheet(:, i)');
+    [encoded, keys] = Encoder_TEAM(Sheet(:, i)');
     SheetEncoded(1:dataamt, i) = encoded;
     SheetEncoded((dataamt+1):(2*dataamt), i) = keys;
 
@@ -41,7 +41,7 @@ function[] = WriteEncoded(Cell)
 
 endfunction
 function Cell = ReadEncoded(ColumnN)
-    Cell = Decode(SheetEncoded(1:dataamt, ColumnN)', SheetEncoded((dataamt+1):(2*dataamt), ColumnN)');
+    Cell = Decoder _TEAM(SheetEncoded(1:dataamt, ColumnN)', SheetEncoded((dataamt+1):(2*dataamt), ColumnN)');
 endfunction
 
 m = ReadEncoded(2)
@@ -60,7 +60,7 @@ switch Option
     % xlswrite('Patients.xlsx', );
     % xlswrite('Patients.xlsx', 'Encoded', );
     Rotation = randi(26);
-    EncodedCell = Encode(PatientData, Rotation)
+    EncodedCell = Encoder_TEAM(PatientData, Rotation)
     % xlswrite('Cybersecurity.xlsx', EncodedCell, 'Encoded (A)');
     Sheet{1, :} = EncodedCell
 
