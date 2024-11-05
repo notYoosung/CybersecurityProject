@@ -1,8 +1,8 @@
 %{
-Title:PGM_TEAM
-Authors:Asa Fowler, Bryan Le
-Date:October 27, 2024
-Summary:
+Title: PGM_TEAM
+Authors: Asa Fowler, Bryan Le
+Date: October 27, 2024
+Summary: 
 %}
 
 function [] = PGM_TEAM()
@@ -16,13 +16,13 @@ function [] = PGM_TEAM()
     %[_, Total, TotalRaw] = xlsread('Cybersecurity.xlsx', 'Sheet1', "")
 
     Sheet = {...
-            'Patient', 'LUKE SKYWALKER', 'LEIA ORGANA', 'HAN SOLO';
-        'Gender', 'Male', 'Female', 'Male';
-        'DOB', '1965-11-05', '1973-10-13', '1965-12-15';
-        'Children', '2', '0', '1';
-        'Allergies', 'Grass, Mold', 'None', 'Carbonite, Wookie dander';
-        'Prescriptions', 'Zocor, Daforce', 'None', 'Cymbalta';
-        };
+    'Patient',       'LUKE SKYWALKER', 'LEIA ORGANA', 'HAN SOLO';
+    'Gender',        'Male',           'Female',      'Male';
+    'DOB',           '1965-11-05',     '1973-10-13',  '1965-12-15';
+    'Children',      '2',              '0',           '1';
+    'Allergies',     'Grass, Mold',    'None',        'Carbonite, Wookie dander';
+    'Prescriptions', 'Zocor, Daforce', 'None',        'Cymbalta';
+    };
     %xlswrite('Cybersecurity.xlsx', Sheet);
 
     SheetEncoded = {'Patient'; 'Gender'; 'DOB'; 'Children'; 'Allergies'; 'Prescriptions'};
