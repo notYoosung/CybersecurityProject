@@ -15,6 +15,7 @@ function [Sheet] = PGM_TEAM()
     %txt(1:1,2:3)
     %[_, Total, TotalRaw] = xlsread('Cybersecurity.xlsx', 'Sheet1', "")
 
+
     Sheet = {...
             'Patient', 'LUKE SKYWALKER', 'LEIA ORGANA', 'HAN SOLO';
         'Gender', 'Male', 'Female', 'Male';
@@ -27,15 +28,29 @@ function [Sheet] = PGM_TEAM()
 
     SheetEncoded = {'Patient'; 'Gender'; 'DOB'; 'Children'; 'Allergies'; 'Prescriptions'};
 
+
+    function Chars = ColLetter(n)
+        Chars = '';
+
+        while (n > 0)
+            Chars = [char(double('A') + mod(n - 1, 26)), Chars];
+            n = int16(n / 26);
+        endwhile
+
+    endfunction
+
     dataamt = size(Sheet, 1);
     
     function [] = WriteXlsx(Cell)
         for i = 1:size(Cell, 1)
             for ii = 1:size(Cell, 2)
-                xlswrite('Cybersecurity.xlsx', cell2mat(Cell'));
+                C = [ColLetter(ii) sprintf('%0.0f', i)]
+                disp(Cell{i, ii})
+                xlswrite('Cybersecurity.xlsx', [ Cell{i, ii} ], 'Sheet1', C);
             endfor
         endfor
-    endfunction 
+    endfunction
+    WriteXlsx(Sheet)
 
     function [] = WriteEncoded(Cell, ColumnN)
         [encoded, keys] = Encoder_TEAM(Cell);
