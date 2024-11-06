@@ -1,6 +1,7 @@
 function [EncodedCell, RotationCell] = Encoder_TEAM(Cell)
     EncodedCell = {};
     RotationCell = {};
+
     for i = 1:size(Cell, 2)
         String = Cell{1, i};
 

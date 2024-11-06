@@ -4,12 +4,12 @@ Authors:Asa Fowler, Bryan Le
 Date:October 27, 2024
 Summary:
 %}
-
 function [Sheet] = PGM_TEAM()
-
     clear;
     clc;
     pkg load io;
+
+
     %[num, txt, raw]
     %[_, Headers, _] = xlsread('Cybersecurity.xlsx', 'Sheet1', 'A1:A6')
     %txt(1:1,2:3)
@@ -28,13 +28,20 @@ function [Sheet] = PGM_TEAM()
     SheetEncoded = {'Patient'; 'Gender'; 'DOB'; 'Children'; 'Allergies'; 'Prescriptions'};
 
     dataamt = size(Sheet, 1);
-
+    
+    function [] = WriteXlsx(Cell)
+        for i = 1:size(Cell, 1)
+            for ii = 1:size(Cell, 2)
+                xlswrite('Cybersecurity.xlsx', cell2mat(Cell'));
+            endfor
+        endfor
+    endfunction 
 
     function [] = WriteEncoded(Cell, ColumnN)
         [encoded, keys] = Encoder_TEAM(Cell);
         Sheet((dataamt + 1):(2 * dataamt), ColumnN) = encoded;
         Sheet((2 * dataamt + 1):(3 * dataamt), ColumnN) = keys;
-        % xlswrite('Cybersecurity.xlsx', cell2mat(Cell'));
+        % xlswrite('Cybersecurity.xlsx', cell2csv(Cell'));
         
     endfunction
 
@@ -43,7 +50,7 @@ function [Sheet] = PGM_TEAM()
     endfunction
 
     function [] = WriteEncrypted(Cell, ColumnN)
-        [encrypted, keys] = Encoder_TEAM(Cell)
+        [encrypted, keys] = Encoder_TEAM(Cell);
         Sheet((3 * dataamt + 1):(4 * dataamt), ColumnN) = encrypted;
         Sheet((4 * dataamt + 1):(5 * dataamt), ColumnN) = keys;
     endfunction
@@ -91,7 +98,6 @@ function [Sheet] = PGM_TEAM()
 
             if isSelected
                 for i = 2:size(Sheet, 2)
-                    disp(indx)
                     if indx == i - 1
                         fprintf('Patient Data:\n')
 
@@ -114,7 +120,7 @@ function [Sheet] = PGM_TEAM()
 
     switch exitChoice
         case 'Quit'
-            fprintf('Session ended')
+            fprintf('Session ended\n')
         case 'Restart'
             PGM_TEAM();
     endswitch

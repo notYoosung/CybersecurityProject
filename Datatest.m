@@ -1,8 +1,21 @@
+function Datatest(arg)
+
 pkg load io;
 
 
-M = {{{}} {}}
+function name = ColLetter(n)
+    name = '';
 
-disp(M)
+    while (n > 0)
+        n = n - 1;
+        name = [char(double('A') + mod(n, 26)), name];
+        n = int16(n / 26/2);
+    endwhile
 
-xlswrite('Datatest.xlsx', M)
+endfunction
+
+
+l = ColLetter(arg)
+
+
+endfunction
