@@ -49,7 +49,6 @@ endfor
 
     function [] = WriteEncrypted(Cell, ColumnN)
         [encrypted, keys] = Encoder_TEAM(Cell);
-        %Sheet{1:dataamt * 4, ColumnN} = [Sheet(:, ColumnN) repelem('', dataamt * 4 - size(Sheet(:, ColumnN), 2))]
         Sheet((3 * dataamt + 1):(4 * dataamt), ColumnN) = encrypted(1, 1:dataamt);
         Sheet((4 * dataamt + 1):(5 * dataamt), ColumnN) = keys;
     endfunction
