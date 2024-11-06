@@ -20,7 +20,7 @@ for i = 1:size(EncryptedCell, 2)
         elseif ASCIICode >= 97 && ASCIICode <= 122 % Lowercase
             ASCIIRotated = 97 + mod(ASCIICode - Rotation - 97, 26);
         elseif ASCIICode >= 48 && ASCIICode <= 57 % Numbers
-            ASCIIRotated = 48 + mod(ASCIICode - Rotation - 48, 26);
+            ASCIIRotated = 48 + mod(ASCIICode - Rotation - 48, 10);
         else
             ASCIIRotated = ASCIICode;
         endif

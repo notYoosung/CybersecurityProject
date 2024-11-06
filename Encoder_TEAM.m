@@ -1,7 +1,6 @@
 function [EncodedCell, RotationCell] = Encoder_TEAM(Cell)
     EncodedCell = {};
     RotationCell = {};
-
     for i = 1:size(Cell, 2)
         String = Cell{1, i};
 
@@ -20,7 +19,7 @@ function [EncodedCell, RotationCell] = Encoder_TEAM(Cell)
             elseif ASCIICode >= 97 && ASCIICode <= 122% Lowercase
                 ASCIIRotated = 97 + mod(ASCIICode + RotationCell{1, i} - 97, 26);
             elseif ASCIICode >= 48 && ASCIICode <= 57% Numbers
-                ASCIIRotated = 48 + mod(ASCIICode + RotationCell{1, i} - 48, 26);
+                ASCIIRotated = 48 + mod(ASCIICode + RotationCell{1, i} - 48, 10);
             else
                 ASCIIRotated = ASCIICode;
             endif
