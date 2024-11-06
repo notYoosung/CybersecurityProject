@@ -106,12 +106,15 @@ function [] = PGM_TEAM()
             endif
 
     endswitch
-            exitChoice = input('Exit? (Yes/No)', 's')
-            %exitChoice = questdlg('Exit program? ', 'End', 'Yes', 'No', 'Yes');
+    exitChoice = input('Exit? (Yes/No)', 's')
+    %exitChoice = questdlg('Exit program? ', 'End', 'Yes', 'No', 'Yes');
 
-            if exitChoice == 'No'
-                PGM_TEAM()
-            endif
+
+    switch exitChoice
+        case 'Quit'
+            fprintf('Session ended')
+        case 'Restart'
+            PGM_TEAM()
 
 
 endfunction
