@@ -1,4 +1,9 @@
 function [EncryptedCell, EncryptedCellKeys] = Encrypt_TEAM(Cell)
+    EncodeType = class(Cell);
+    if strcmp(EncodeType, 'char')
+        Cell = { Cell };
+    end
+
     EncryptedCell = {};
     EncryptedCellKeys = {};
 
@@ -40,5 +45,10 @@ function [EncryptedCell, EncryptedCellKeys] = Encrypt_TEAM(Cell)
         EncryptedCell{1, iCell} = EncryptedText;
         EncryptedCellKeys{1, iCell} = Key;
     endfor
+
+    if strcmp(EncodeType, 'char')
+        EncryptedCell = EncryptedCell{1, 1};
+        EncryptedCellKeys = cell2mat(EncryptedCellKeys{1, 1});
+    end
 
 endfunction

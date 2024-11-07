@@ -1,7 +1,7 @@
 function [EncodedCell, RotationCell] = Encoder_TEAM(Cell, CustomRotation)
-    EncodeType = class(Cell)
+    EncodeType = class(Cell);
     if strcmp(EncodeType, 'char')
-        Cell = { Cell }
+        Cell = { Cell };
     end
 
 
@@ -42,6 +42,6 @@ function [EncodedCell, RotationCell] = Encoder_TEAM(Cell, CustomRotation)
     end
 
     if strcmp(EncodeType, 'char')
-        EncodedCell = EncodedCell{1, i}
+        EncodedCell = EncodedCell{1, i};
     end
 end
