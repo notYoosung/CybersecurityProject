@@ -1,8 +1,8 @@
 %{
-Title:PGM_TEAM
-Authors:Asa Fowler, Bryan Le
-Date:October 27, 2024
-Summary:
+      Title:    Cybersecurity Project
+    Authors:    Asa Fowler, Bryan Le
+       Date:    October 27, 2024
+    Summary:    
 %}
 function [Sheet] = PGM_TEAM()
     clear;
@@ -17,7 +17,7 @@ function [Sheet] = PGM_TEAM()
 
 
     Sheet = {...
-            'Patient', 'LUKE SKYWALKER', 'LEIA ORGANA', 'HAN SOLO';
+        'Patient', 'LUKE SKYWALKER', 'LEIA ORGANA', 'HAN SOLO';
         'Gender', 'Male', 'Female', 'Male';
         'DOB', '1965-11-05', '1973-10-13', '1965-12-15';
         'Children', '2', '0', '1';

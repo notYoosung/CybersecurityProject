@@ -1,4 +1,10 @@
-function [EncodedCell, RotationCell] = Encoder_TEAM(Cell)
+function [EncodedCell, RotationCell] = Encoder_TEAM(Cell, CustomRotation)
+    EncodeType = class(Cell)
+    if strcmp(EncodeType, 'char')
+        Cell = { Cell }
+    end
+
+
     EncodedCell = {};
     RotationCell = {};
 
@@ -10,7 +16,11 @@ function [EncodedCell, RotationCell] = Encoder_TEAM(Cell)
         end
 
         EncodedCell{1, i} = '';
-        RotationCell{1, i} = randi(25);
+        if nargin == 2
+            RotationCell(1, i) = CustomRotation
+        else
+            RotationCell{1, i} = randi(25);
+        end
 
         for j = 1:length(String)
             ASCIICode = double(String(j));
@@ -23,7 +33,7 @@ function [EncodedCell, RotationCell] = Encoder_TEAM(Cell)
                 ASCIIRotated = 48 + mod(ASCIICode + RotationCell{1, i} - 48, 10);
             else
                 ASCIIRotated = ASCIICode;
-            endif
+            end
 
             EncodedCell{1, i}(j) = char(ASCIIRotated);
 
@@ -31,4 +41,7 @@ function [EncodedCell, RotationCell] = Encoder_TEAM(Cell)
 
     end
 
-endfunction
+    if strcmp(EncodeType, 'char')
+        EncodedCell = EncodedCell{1, i}
+    end
+end
