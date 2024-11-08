@@ -1,22 +1,24 @@
-%{
-    Encoder_TEAM
-        Caesar-shift a char array or a cell of char arrays
-
-    Parameters
-    ----------
-    Input : char|cell
-        Character array or character cell.
-    RotationOutput : integer (optional)
-        How much to rotate each input
-
-    Returns
-    -------
-    EncodedOutput: char|cell
-        Same data type as `Input`. Caesar-shifted chars.
-        
-    https://www.geeksforgeeks.org/python-docstrings/
-%}
 function [EncodedOutput, RotationOutput] = Encoder_TEAM(Input, CustomRotation)
+    %{
+        Encoder_TEAM
+            Caesar-shift a char array or a cell of char arrays
+
+        Parameters
+        ----------
+        Input : char|cell
+            Character array or character cell.
+        RotationOutput : integer (optional)
+            How much to rotate each input
+
+        Returns
+        -------
+        EncodedOutput: char|cell
+            Same data type as `Input`. Caesar-shifted chars.
+        RotationOutput : cell
+            An integer cell of respective rotations in case no custom rotation is given
+            
+        https://www.geeksforgeeks.org/python-docstrings/
+    %}
 
     % Compatibility for either batch-encoding a cell or encoding a single char array
     EncodeType = class(Input);
@@ -24,7 +26,7 @@ function [EncodedOutput, RotationOutput] = Encoder_TEAM(Input, CustomRotation)
         Input = { Input };
     end
 
-    % Constants
+    % Ranges for alphanumeric cases
     ASCIIUpper = [65 90];
     ASCIILower = [97 122];
     ASCIINumber = [48 57];
@@ -40,7 +42,8 @@ function [EncodedOutput, RotationOutput] = Encoder_TEAM(Input, CustomRotation)
         % Alias for referencing the current indexed string
         String = Input{1, CellIndex};
 
-        if length(String) == 0; continue; end % If nothing to encode, then skip
+        % If nothing to encode, then skip
+        if length(String) == 0; continue; end
 
         % Declare the encoded counterpart
         EncodedOutput{1, CellIndex} = '';

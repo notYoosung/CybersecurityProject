@@ -1,54 +1,82 @@
-function [EncryptedCell, EncryptedCellKeys] = Encrypt_TEAM(Cell)
-    EncodeType = class(Cell);
+function [EncryptedOutput, EncryptedKeys] = Encrypt_TEAM(Input)
+    %{
+        Encrypt_TEAM
+            Mix a char array or a cell of char arrays with a random amount of random alphanumeric characters
+
+        Parameters
+        ----------
+        Input : char|cell[char]
+            Character array or character cell.
+
+        Returns
+        -------
+        EncryptedOutput: char|cell(char)
+            Char or char cell of random characters with the original input scattered within. Same data type as `Input`.
+        EncryptedKeys : mat|cell(int)
+            A vector matrix or cell of integer cells for respective keys for the output
+            
+        https://www.geeksforgeeks.org/python-docstrings/
+    %}
+
+    % Compatibility for either batch-encoding a cell or encoding a single char array
+    EncodeType = class(Input);
     if strcmp(EncodeType, 'char')
-        Cell = { Cell };
+        Input = { Input };
     end
 
-    EncryptedCell = {};
-    EncryptedCellKeys = {};
-
+    % Ranges for alphanumeric cases
     ASCIIUpper = [65:90];
     ASCIILower = [97:122];
     ASCIINumber = [48:57];
     CharPool = [ASCIIUpper ASCIILower ASCIINumber];
 
-    for iCell = 1:size(Cell, 2)
-        EncryptedCell{1, iCell} = {};
-        EncryptedCellKeys{1, iCell} = {};
+    % Declare the outputs
+    EncryptedOutput = {};
+    EncryptedKeys = {};
 
-        EncryptedText = '';
+    % Loop through the items to encrypt
+    for iCell = 1:size(Input, 2)
+        OriginalString = Input{1, iCell}
+        % Declare a new index in the outputs
+        EncryptedOutput{1, iCell} = {};
+        EncryptedKeys{1, iCell} = {};
 
+        % Declare & make legible alias for encrypted output
+        EncryptedString = '';
         Key = {};
-        CurrIndex = 1;
 
-        for i = 1:size(Cell{1, iCell}, 2)
+        % Loop through each input and add encryption
+        for i = 1:size(OriginalString, 2)
+            % According to assignment, encrypt with up to 10 random separating characters
             SepLen = randi(10);
 
+            % Populate string
             for Sep = 1:SepLen
-                EncryptedText(CurrIndex) = CharPool(randi(length(CharPool)));
-                CurrIndex = CurrIndex + 1;
+                % Next index of string is random selection of alphanum pool
+                EncryptedString(length(EncryptedString) + 1) = CharPool(randi(length(CharPool)));
             endfor
 
-            EncryptedText(CurrIndex) = Cell{1, iCell}(i);
-            Key{1, size(Key, 2) + 1} = CurrIndex;
-            CurrIndex = CurrIndex + 1;
-
+            % Next index of string is char from original string
+            EncryptedString(length(EncryptedString) + 1) = OriginalString(i);
+            % Store index for key
+            Key{1, size(Key, 2) + 1} = length(EncryptedString);
         endfor
 
-        SepLen = randi(10);
-
-        for Sep = 1:SepLen
-            EncryptedText(CurrIndex) = CharPool(randi(length(CharPool)));
-            CurrIndex = CurrIndex + 1;
+        % Re-populate end of string to prevent a the last char = last original char
+        for Sep = 1:randi(10)
+            EncryptedString(length(EncryptedString) + 1) = CharPool(randi(length(CharPool)));
         endfor
 
-        EncryptedCell{1, iCell} = EncryptedText;
-        EncryptedCellKeys{1, iCell} = Key;
+        % Assign the aliases to their respective outputs
+        EncryptedOutput{1, iCell} = EncryptedString;
+        EncryptedKeys{1, iCell} = Key;
     endfor
 
+
+    % If data to encode was given as char, convert output to char & keys to vector matrix
     if strcmp(EncodeType, 'char')
-        EncryptedCell = EncryptedCell{1, 1};
-        EncryptedCellKeys = cell2mat(EncryptedCellKeys{1, 1});
+        EncryptedOutput = EncryptedOutput{1, 1};
+        EncryptedKeys = cell2mat(EncryptedKeys{1, 1});
     end
 
 endfunction
