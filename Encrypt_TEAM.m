@@ -1,82 +1,82 @@
-function [EncryptedOutput, EncryptedKeys] = Encrypt_TEAM(Input)
+function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(input)
     %{
         Encrypt_TEAM
             Mix a char array or a cell of char arrays with a random amount of random alphanumeric characters
 
         Parameters
         ----------
-        Input : char|cell[char]
+        input : char|cell[char]
             Character array or character cell.
 
         Returns
         -------
-        EncryptedOutput: char|cell(char)
-            Char or char cell of random characters with the original input scattered within. Same data type as `Input`.
-        EncryptedKeys : mat|cell(int)
+        encryptedOutput: char|cell(char)
+            Char or char cell of random characters with the original input scattered within. Same data type as `input`.
+        encryptedKeys : mat|cell(int)
             A vector matrix or cell of integer cells for respective keys for the output
             
         https://www.geeksforgeeks.org/python-docstrings/
     %}
 
     % Compatibility for either batch-encoding a cell or encoding a single char array
-    EncodeType = class(Input);
-    if strcmp(EncodeType, 'char')
-        Input = { Input };
+    encodeType = class(input);
+    if strcmp(encodeType, 'char')
+        input = { input };
     end
 
     % Ranges for alphanumeric cases
-    ASCIIUpper = [65:90];
-    ASCIILower = [97:122];
-    ASCIINumber = [48:57];
-    CharPool = [ASCIIUpper ASCIILower ASCIINumber];
+    asciiUpper = [65:90];
+    asciiLower = [97:122];
+    asciiNumber = [48:57];
+    charPool = [asciiUpper asciiLower asciiNumber];
 
     % Declare the outputs
-    EncryptedOutput = {};
-    EncryptedKeys = {};
+    encryptedOutput = {};
+    encryptedKeys = {};
 
     % Loop through the items to encrypt
-    for iCell = 1:size(Input, 2)
-        OriginalString = Input{1, iCell}
+    for iCell = 1:size(input, 2)
+        originalString = input{1, iCell}
         % Declare a new index in the outputs
-        EncryptedOutput{1, iCell} = {};
-        EncryptedKeys{1, iCell} = {};
+        encryptedOutput{1, iCell} = {};
+        encryptedKeys{1, iCell} = {};
 
         % Declare & make legible alias for encrypted output
-        EncryptedString = '';
-        Key = {};
+        encryptedString = '';
+        key = {};
 
         % Loop through each input and add encryption
-        for i = 1:size(OriginalString, 2)
+        for i = 1:size(originalString, 2)
             % According to assignment, encrypt with up to 10 random separating characters
-            SepLen = randi(10);
+            sepLen = randi(10);
 
             % Populate string
-            for Sep = 1:SepLen
+            for sep = 1:sepLen
                 % Next index of string is random selection of alphanum pool
-                EncryptedString(length(EncryptedString) + 1) = CharPool(randi(length(CharPool)));
+                encryptedString(length(encryptedString) + 1) = charPool(randi(length(charPool)));
             endfor
 
             % Next index of string is char from original string
-            EncryptedString(length(EncryptedString) + 1) = OriginalString(i);
+            encryptedString(length(encryptedString) + 1) = originalString(i);
             % Store index for key
-            Key{1, size(Key, 2) + 1} = length(EncryptedString);
+            key{1, size(key, 2) + 1} = length(encryptedString);
         endfor
 
         % Re-populate end of string to prevent a the last char = last original char
-        for Sep = 1:randi(10)
-            EncryptedString(length(EncryptedString) + 1) = CharPool(randi(length(CharPool)));
+        for sep = 1:randi(10)
+            encryptedString(length(encryptedString) + 1) = charPool(randi(length(charPool)));
         endfor
 
         % Assign the aliases to their respective outputs
-        EncryptedOutput{1, iCell} = EncryptedString;
-        EncryptedKeys{1, iCell} = Key;
+        encryptedOutput{1, iCell} = encryptedString;
+        encryptedKeys{1, iCell} = key;
     endfor
 
 
     % If data to encode was given as char, convert output to char & keys to vector matrix
-    if strcmp(EncodeType, 'char')
-        EncryptedOutput = EncryptedOutput{1, 1};
-        EncryptedKeys = cell2mat(EncryptedKeys{1, 1});
+    if strcmp(encodeType, 'char')
+        encryptedOutput = encryptedOutput{1, 1};
+        encryptedKeys = cell2mat(encryptedKeys{1, 1});
     end
 
 endfunction

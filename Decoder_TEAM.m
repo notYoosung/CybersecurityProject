@@ -1,37 +1,37 @@
-function [DecryptedCell] = Decoder_TEAM(EncryptedCell, KeyCell)
-    DecryptedCell = {};
+function [decryptedCell] = Decoder_TEAM(encryptedCell, keyCell)
+    decryptedCell = {};
 
-    for i = 1:size(EncryptedCell, 2)
-        DecryptedCell{1, i} = '';
+    for i = 1:size(encryptedCell, 2)
+        decryptedCell{1, i} = '';
 
-        if size(EncryptedCell, 2) == 0
+        if size(encryptedCell, 2) == 0
             continue
         endif
 
-        Rotation = KeyCell{1, i};
+        currRotation = keyCell{1, i};
 
-        String = EncryptedCell{1, i};
+        currString = encryptedCell{1, i};
 
-        if length(String) == 0
+        if length(currString) == 0
             continue
         end
 
-        DecryptedCell{1, i} = '';
+        decryptedCell{1, i} = '';
 
-        for j = 1:length(String)
-            ASCIICode = double(String(j));
+        for j = 1:length(currString)
+            asciiCode = double(currString(j));
 
-            if ASCIICode >= 65 && ASCIICode <= 90% Uppercase
-                ASCIIRotated = 65 + mod(ASCIICode - Rotation - 65, 26);
-            elseif ASCIICode >= 97 && ASCIICode <= 122% Lowercase
-                ASCIIRotated = 97 + mod(ASCIICode - Rotation - 97, 26);
-            elseif ASCIICode >= 48 && ASCIICode <= 57% Numbers
-                ASCIIRotated = 48 + mod(ASCIICode - Rotation - 48, 10);
+            if asciiCode >= 65 && asciiCode <= 90 % Uppercase
+                asciiRotated = 65 + mod(asciiCode - currRotation - 65, 26);
+            elseif asciiCode >= 97 && asciiCode <= 122 % Lowercase
+                asciiRotated = 97 + mod(asciiCode - currRotation - 97, 26);
+            elseif asciiCode >= 48 && asciiCode <= 57 % Numbers
+                asciiRotated = 48 + mod(asciiCode - currRotation - 48, 10);
             else
-                ASCIIRotated = ASCIICode;
+                asciiRotated = asciiCode;
             endif
 
-            DecryptedCell{1, i}(j) = char(ASCIIRotated);
+            decryptedCell{1, i}(j) = char(asciiRotated);
 
         end
 

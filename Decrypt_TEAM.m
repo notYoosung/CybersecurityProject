@@ -1,15 +1,15 @@
-function [DecryptedCell] = Decrypt_TEAM(EncryptedCell, Key)
-    DecryptedCell = {};
+function [decryptedCell] = Decrypt_TEAM(encryptedCell, key)
+    decryptedCell = {};
 
-    for i = 1:size(EncryptedCell, 2)
-        DecryptedCell{1, i} = '';
+    for i = 1:size(encryptedCell, 2)
+        decryptedCell{1, i} = '';
 
-        if size(Key, 2) == 0
+        if size(key, 2) == 0
             continue
         endif
 
-        for j = 1:size(Key{1, i}, 2)
-            DecryptedCell{1, i}(j) = EncryptedCell{1, i}(Key{1, i}{1, j});
+        for j = 1:size(key{1, i}, 2)
+            decryptedCell{1, i}(j) = encryptedCell{1, i}(key{1, i}{1, j});
         endfor
 
     endfor

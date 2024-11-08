@@ -1,88 +1,88 @@
-function [EncodedOutput, RotationOutput] = Encoder_TEAM(Input, CustomRotation)
+function [encodedOutput, rotationOutput] = Encoder_TEAM(input, customRotation)
     %{
         Encoder_TEAM
             Caesar-shift a char array or a cell of char arrays
 
         Parameters
         ----------
-        Input : char|cell
+        input : char|cell
             Character array or character cell.
-        RotationOutput : integer (optional)
+        rotationOutput : integer (optional)
             How much to rotate each input
 
         Returns
         -------
-        EncodedOutput: char|cell
-            Same data type as `Input`. Caesar-shifted chars.
-        RotationOutput : cell
+        encodedOutput: char|cell
+            Same data type as `input`. Caesar-shifted chars.
+        rotationOutput : cell
             An integer cell of respective rotations in case no custom rotation is given
             
         https://www.geeksforgeeks.org/python-docstrings/
     %}
 
     % Compatibility for either batch-encoding a cell or encoding a single char array
-    EncodeType = class(Input);
-    if strcmp(EncodeType, 'char')
-        Input = { Input };
+    encodeType = class(input);
+    if strcmp(encodeType, 'char')
+        input = { input };
     end
 
     % Ranges for alphanumeric cases
-    ASCIIUpper = [65 90];
-    ASCIILower = [97 122];
-    ASCIINumber = [48 57];
-    CharPool = [ASCIIUpper; ASCIILower; ASCIINumber];
+    asciiUpper = [65 90];
+    asciiLower = [97 122];
+    asciiNumber = [48 57];
+    charPool = [asciiUpper; asciiLower; asciiNumber];
 
 
     % Declare the outputs
-    EncodedOutput = {};
-    RotationOutput = {};
+    encodedOutput = {};
+    rotationOutput = {};
 
     % Loop through the items to encode
-    for CellIndex = 1:size(Input, 2)
+    for cellIndex = 1:size(input, 2)
         % Alias for referencing the current indexed string
-        String = Input{1, CellIndex};
+        currString = input{1, cellIndex};
 
         % If nothing to encode, then skip
-        if length(String) == 0; continue; end
+        if length(currString) == 0; continue; end
 
         % Declare the encoded counterpart
-        EncodedOutput{1, CellIndex} = '';
+        encodedOutput{1, cellIndex} = '';
 
         if nargin == 2 % Check if a default rotation is set
-            RotationOutput(1, CellIndex) = CustomRotation;
+            rotationOutput(1, cellIndex) = customRotation;
         else % Otherwise, make a random rotation key (offset to prevent output = input)
-            RotationOutput{1, CellIndex} = randi(24);
+            rotationOutput{1, cellIndex} = randi(24);
         end
 
         % Go char-by-char, encode alpha-num chars and leave others as-is
-        for StringIndex = 1:length(String)
+        for stringIndex = 1:length(currString)
             % Alias for reference
-            Code = double(String(StringIndex));
+            charCode = double(currString(stringIndex));
 
             % Pre-declare (in case no match)
-            RotatedCode = Code;
+            rotatedCode = charCode;
 
             % `mod` returns remainder of division; constrains respective char to its case
-            for iCase = 1:size(CharPool, 1)
-                LowerRange = CharPool(iCase, 1);
-                UpperRange = CharPool(iCase, 2);
-                if Code >= LowerRange && Code <= UpperRange % Uppercase
-                    RotatedCode = LowerRange + ... % Account for offset
-                        mod(Code + RotationOutput{1, CellIndex} - ... % Add the rotation to the char code
-                        LowerRange, ... % Offset for `mod` to loop within the range
-                        UpperRange - LowerRange); % Total range to get remainder within
+            for iCase = 1:size(charPool, 1)
+                lowerRange = charPool(iCase, 1);
+                upperRange = charPool(iCase, 2);
+                if charCode >= lowerRange && charCode <= upperRange % Uppercase
+                    rotatedCode = lowerRange + ... % Account for offset
+                        mod(charCode + rotationOutput{1, cellIndex} - ... % Add the rotation to the char code
+                        lowerRange, ... % Offset for `mod` to loop within the range
+                        upperRange - lowerRange); % Total range to get remainder within
                 end
             end
 
             % Set encoded char @ repective index
-            EncodedOutput{1, CellIndex}(StringIndex) = char(RotatedCode);
+            encodedOutput{1, cellIndex}(stringIndex) = char(rotatedCode);
 
         end
 
     end
 
     % If data to encode was given as char, output as char
-    if strcmp(EncodeType, 'char')
-        EncodedOutput = EncodedOutput{1, CellIndex};
+    if strcmp(encodeType, 'char')
+        encodedOutput = encodedOutput{1, cellIndex};
     end
 end
