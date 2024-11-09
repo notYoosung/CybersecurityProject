@@ -86,3 +86,7 @@ function [encodedOutput, rotationOutput] = Encoder_TEAM(input, customRotation)
         encodedOutput = encodedOutput{1, cellIndex};
     end
 end
+%{
+https://docs.octave.org/v4.0.0/Format-of-Descriptions.html#Format-of-Descriptions
+https://docs.octave.org/v4.0.0/Octave-Sources-_0028m_002dfiles_0029.html#Octave-Sources-_0028m_002dfiles_0029
+%}
