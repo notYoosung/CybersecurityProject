@@ -56,7 +56,7 @@ function [excelSheet] = PGM_TEAM ()
         [encoded, keys] = Encoder_TEAM (Cell);
         excelSheet((dataamt + 1):(2 * dataamt), ColumnN) = encoded;
         excelSheet((2 * dataamt + 1):(3 * dataamt), ColumnN) = keys;
-        % xlswrite('Cybersecurity.xlsx', cell2csv(Cell'));
+        xlswrite('Cybersecurity.xlsx', cell2mat(Cell));
         
     endfunction
 
@@ -99,6 +99,13 @@ function [excelSheet] = PGM_TEAM ()
             prompts = {'Patient' 'Gender' 'DOB' 'Children' 'Allergies' 'Prescriptions'};
             patientData = inputdlg(prompts, 'Create Patient');
             encodedCell = Encoder_TEAM (patientData);
+
+            fprintf('Patient Data:\n')
+
+            for j = 1:dataamt
+                fprintf('\t%10s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, size(excelSheet, 2))))
+            endfor
+            
             WriteSheet (patientData, size(excelSheet, 2) + 1);
         case 'Read'
             patients = excelSheet(1, 2:size(excelSheet, 2));
@@ -108,15 +115,10 @@ function [excelSheet] = PGM_TEAM ()
                 'ListString', patients);
 
             if isSelected
-                for i = 2:size(excelSheet, 2)
-                    if indx == i - 1
-                        fprintf('Patient Data:\n')
+                fprintf('Patient Data:\n')
 
-                        for j = 1:dataamt
-                            fprintf('\t%10s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, i)))
-                        endfor
-                        break
-                    endif
+                for j = 1:dataamt
+                    fprintf('\t%10s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, indx + 1)))
                 endfor
             else
                 fprintf('exited')
