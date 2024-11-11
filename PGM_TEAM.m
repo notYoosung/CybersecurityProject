@@ -2,7 +2,8 @@
       Title:    Cybersecurity Project
     Authors:    Asa Fowler, Bryan Le
        Date:    October 27, 2024
-    Summary:    Create or read patient data.
+    Summary:    Create or read patient data. Data is encoded and encrypted into an excel sheet
+                (and returned as a cell matrix for ease of processing).
 
     Resources:
         Matlab Docs:
@@ -23,7 +24,14 @@ function [excelSheet] = PGM_TEAM ()
         excelSheet: cell
             A copy of the excel sheet
             Rows are patients, columns are data fields
-            By default, there are 6 fields ()
+            By default, there are 6 fields (Patient, Gender, DOB, Children, Allergies, Prescriptions)
+            Columns 1-6 are unmodified strings (for reference)
+                    7-12:  Encoded Strings
+                    13-18: Encoded Keys
+                    19-24: Encrypted Strings
+                    25-30: Encrypted Keys
+            Strings with keys can be decoded/decrypted with respective `*_TEAM` functions,
+                and wrapper functions are contained with this function for further ease.
 %}
 
     % Housekeeping functions
