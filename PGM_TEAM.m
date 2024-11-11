@@ -2,8 +2,10 @@
       Title:    Cybersecurity Project
     Authors:    Asa Fowler, Bryan Le
        Date:    October 27, 2024
-    Summary:    Create or read patient data. Data is encoded and encrypted into an excel sheet
-                (and returned as a cell matrix for ease of processing).
+ Instructor:    Professor Williams
+     Course:    CENG-1520-02 Programming for Engineers - Fa24
+    Summary:    This program can create or read patient data. Data is encoded and encrypted into an excel
+                sheet and is additionally returned as a cell matrix for ease of processing.
 
     Resources:
         Matlab Docs:
@@ -76,11 +78,17 @@ function [excelSheet] = PGM_TEAM ()
     function cellOut = _str2cell (strInput)
         cellOut = strsplit(strInput, ',');
     end
-    % Batch-conversion
-    function cellOut = _cellstr2cell (cellstrInput)
+    % Batch-conversions
+    function cellOut = batch_cell2str (cellInput)
         cellOut = {};
-        for i = 1:size(cellstrInput, 2)
-            cellOut{1, i} = _cell2str (cellstrInput{1, i});
+        for i = 1:size(cellInput, 2)
+            cellOut{1, i} = _cell2str (cellInput{1, i});
+        end
+    end
+    function cellOut = batch_str2cell (cellInput)
+        cellOut = {};
+        for i = 1:size(cellInput, 2)
+            cellOut{1, i} = _str2cell (cellInput{1, i});
         end
     end
 
@@ -116,18 +124,19 @@ function [excelSheet] = PGM_TEAM ()
     function [] = WriteEncrypted (dataCell, index)
         [encrypted, keys] = Encrypt_TEAM (dataCell);
         excelSheet((3 * dataamt + 1):(4 * dataamt), index) = encrypted;
-        excelSheet((4 * dataamt + 1):(5 * dataamt), index) = _cellstr2cell (keys);
+        excelSheet((4 * dataamt + 1):(5 * dataamt), index) = batch_cell2str (keys);
+        % re = Decrypt_TEAM(encrypted, batch_str2cell (batch_cell2str (keys)))
     endfunction
 
     function dataCell = ReadEncrypted (index)
-        dataCell = Decrypt_TEAM (excelSheet((dataamt * 3 + 1):(dataamt * 4), index)', _cellstr2cell (excelSheet((dataamt * 4 + 1):(5 * dataamt), index)'));
+        dataCell = Decrypt_TEAM (excelSheet((dataamt * 3 + 1):(dataamt * 4), index)', batch_str2cell (excelSheet((dataamt * 4 + 1):(5 * dataamt), index)'));
     endfunction
 
     % Wrapper function to handle saving data
     function [] = WriteSheet (dataCell, index)
         excelSheet(1:dataamt, index) = dataCell;
-        WriteEncrypted (dataCell, index);
-        WriteEncoded (dataCell, index);
+        WriteEncrypted (dataCell', index);
+        WriteEncoded (dataCell', index);
     endfunction
 
     % Encrypt and encode the initial patient data
@@ -153,7 +162,7 @@ function [excelSheet] = PGM_TEAM ()
 
             % Save the data
             WriteSheet (patientData, size(excelSheet, 2) + 1);
-
+            xlswrite('Cybersecurity.xlsx', excelSheet); % Not necessary, but good for displaying values while running
             
         case 'Read'
             % List out patient names and prompt a selection
@@ -174,8 +183,9 @@ function [excelSheet] = PGM_TEAM ()
 
     end 
 
-
-    % Realized the columns and rows were swapped, but transposing the sheet should function the same
+    % Realized too late that the columns and rows were swapped, but transposing the sheet should function the same.
+    % Scripts may be able to be refactored to remove the need to transpose.
+    % However, care must be taken as not all data types (such as vectors of strings) transpose the same.
     excelSheet = excelSheet';
     xlswrite('Cybersecurity.xlsx', excelSheet);
 
