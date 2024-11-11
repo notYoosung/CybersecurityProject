@@ -37,18 +37,18 @@ function [decryptedOutput] = Decrypt_TEAM(encryptedInput, key)
         % If there's no key, then skip
         if size(key, 2) == 0
             continue
-        endif
+        end
 
         % Index each key as the output
         for j = 1:size(key{1, i}, 2)
             decryptedOutput = [decryptedOutput encryptedInput{1, i}(str2double(key{1, i}{1, j}))];
-        endfor
+        end
 
-    endfor
+    end
 
     % If data to encode was given as char, output as char
     if strcmp(inputType, 'char')
         decryptedOutput = decryptedOutput{1, 1};
     end
 
-endfunction
+end

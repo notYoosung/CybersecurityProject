@@ -54,21 +54,9 @@ function [excelSheet] = PGM_TEAM ()
         'Prescriptions', 'Zocor, Daforce', 'None', 'Cymbalta';
     };
 
-    % Unused, but used for the `WriteXlsx` function
-    % https://stackoverflow.com/questions/181596/how-to-convert-a-column-number-e-g-127-into-an-excel-column-e-g-aa
-    % function Chars = toLetter(n)
-    %     Chars = '';
-
-    %     while (n > 0)
-    %         Chars = [char(double('A') + mod(n - 1, 26)), Chars];
-    %         n = int16(n / 26);
-    %     end
-
-    % end
-    
-
     % Since octave doesn't support some Matlab functions, these act as a stand-in for data type conversions
     function strOut = _cell2str (cellInput)
+        % Loop through the cell and concatenate with a comma between
         strOut = '';
         for i = 1:size(cellInput, 2) - 1
             strOut = [strOut sprintf('%0.0f', cellInput{i}) ','];
@@ -76,9 +64,11 @@ function [excelSheet] = PGM_TEAM ()
         strOut = [strOut sprintf('%0.0f', cellInput{size(cellInput, 2)})];
     end
     function cellOut = _str2cell (strInput)
+        % Split by commas
         cellOut = strsplit(strInput, ',');
     end
     % Batch-conversions
+    % Essentially loops through each element and runs its repective function on each element
     function cellOut = batch_cell2str (cellInput)
         cellOut = {};
         for i = 1:size(cellInput, 2)
@@ -92,58 +82,44 @@ function [excelSheet] = PGM_TEAM ()
         end
     end
 
-    % Store the amount of key indecies for reference
-    dataamt = size(excelSheet, 1);%6;
+    % Store the amount of key indecies for reference (6 from the prompt, but automatically
+    % checking the sheet's dimension may be useful in other cases)
+    dataamt = 6;%size(excelSheet, 1);
     
-    % Unused, but functioned as a stable way to show data while testing
-    % Elements would be inserted cell-by-cell, allowing for tracking if any bugs/crashes occur
-    % function [] = WriteXlsx (dataCell, cellIndex)
-    %     for i = 1:size(dataCell, 1)
-    %         for ii = 1:size(dataCell, 2)
-    %             C = [toLetter(ii+cellIndex) sprintf('%0.0f', i)];
-    %             if strcmp(class(dataCell{i, ii}), 'cell')
-    %                 dataCell{i, ii} = _cell2str (dataCell{i, ii})
-    %             end
-    %             disp({ dataCell{i, ii} })
-    %             xlswrite('Cybersecurity.xlsx', { dataCell{i, ii} }, 'Sheet1', C);
-    %         endfor
-    %     endfor
-    % endfunction
-
-    % Utility functions: Uses the `*_TEAM.m` functions to process data. More documentation within respective function files.
+    % Utility functions: Uses the `*_TEAM` functions to process data. More documentation within their respective function files.
     function [] = WriteEncoded (dataCell, index)
         [encoded, keys] = Encoder_TEAM (dataCell);
         excelSheet((    dataamt + 1):(2 * dataamt), index) = encoded;
         excelSheet((2 * dataamt + 1):(3 * dataamt), index) = keys;
-    endfunction
+    end
 
     function dataCell = ReadEncoded (index)
         dataCell = Decoder_TEAM (excelSheet((dataamt + 1):(2 * dataamt), index)', excelSheet((2 * dataamt + 1):(3 * dataamt), index)');
-    endfunction
+    end
 
     function [] = WriteEncrypted (dataCell, index)
         [encrypted, keys] = Encrypt_TEAM (dataCell);
         excelSheet((3 * dataamt + 1):(4 * dataamt), index) = encrypted;
         excelSheet((4 * dataamt + 1):(5 * dataamt), index) = batch_cell2str (keys);
         % re = Decrypt_TEAM(encrypted, batch_str2cell (batch_cell2str (keys)))
-    endfunction
+    end
 
     function dataCell = ReadEncrypted (index)
         dataCell = Decrypt_TEAM (excelSheet((dataamt * 3 + 1):(dataamt * 4), index)', batch_str2cell (excelSheet((dataamt * 4 + 1):(5 * dataamt), index)'));
-    endfunction
+    end
 
     % Wrapper function to handle saving data
     function [] = WriteSheet (dataCell, index)
         excelSheet(1:dataamt, index) = dataCell;
         WriteEncrypted (dataCell', index);
         WriteEncoded (dataCell', index);
-    endfunction
+    end
 
     % Encrypt and encode the initial patient data
     for i = 2:(size(excelSheet, 2))
         WriteEncoded (excelSheet(1:dataamt, i)', i);
         WriteEncrypted (excelSheet(1:dataamt, i)', i);
-    endfor
+    end
 
     % Prompt a menu
     menuOption = questdlg('Create or read patient data? ', 'Menu', 'Create', 'Read', 'Read');
@@ -152,18 +128,29 @@ function [excelSheet] = PGM_TEAM ()
         case 'Create'
             % List out and prompt patient fields
             prompts = {'Patient' 'Gender' 'DOB' 'Children' 'Allergies' 'Prescriptions'};
-            patientData = inputdlg(prompts, 'Create Patient');
+            promptDimensions = [1,64;1,64;1,64;1,64;1,64;1,64];
+            patientData = inputdlg(prompts, 'Create Patient', promptDimensions);
 
-            % Output patient information
-            fprintf('Patient Data:\n');
-            for j = 1:dataamt
-                fprintf('%10s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, size(excelSheet, 2))));
-            endfor
+            % Check if user exited
+            if length(patientData) ~= 0
+                % Handle edge case if empty fields are given
+                for iData = 1:size(patientData, 1)
+                    if isempty(patientData(iData, 1){1,1})
+                        patientData(iData, 1){1,1} = ' '
+                    end
+                end
 
-            % Save the data
-            WriteSheet (patientData, size(excelSheet, 2) + 1);
-            xlswrite('Cybersecurity.xlsx', excelSheet); % Not necessary, but good for displaying values while running
-            
+                % Output patient information
+                fprintf('%15s:\n', 'Patient Data');
+                for j = 1:dataamt
+                    fprintf('%15s:\t %s\n', char(excelSheet(j, 1)), char(patientData(j, size(patientData, 2))));
+                end
+
+                % Save the data
+                WriteSheet (patientData, size(excelSheet, 2) + 1);
+                xlswrite('Cybersecurity.xlsx', excelSheet); % Not necessary, but good for displaying values while running
+            end
+
         case 'Read'
             % List out patient names and prompt a selection
             patients = excelSheet(1, 2:size(excelSheet, 2));
@@ -173,7 +160,7 @@ function [excelSheet] = PGM_TEAM ()
                 'ListString', patients);
 
             if isSelected % Output patient information
-                fprintf('Patient Data:\n')
+                fprintf('%15s:\n', 'Patient Data');
                 for j = 1:dataamt
                     fprintf('%15s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, indx + 1)));
                 end
@@ -181,7 +168,7 @@ function [excelSheet] = PGM_TEAM ()
                 fprintf('Exited')
             end
 
-    end 
+    end
 
     % Realized too late that the columns and rows were swapped, but transposing the sheet should function the same.
     % Scripts may be able to be refactored to remove the need to transpose.
@@ -192,11 +179,9 @@ function [excelSheet] = PGM_TEAM ()
     % Request exit
     exitChoice = questdlg('Do you wish to exit or run again?', 'End of Program', 'Quit', 'Restart', 'Quit');
 
-    % Handle cases
-    switch exitChoice
-        case 'Restart'
-            PGM_TEAM ();
-        case 'Quit'
+    % Handle restart case
+    if strcmp(exitChoice, 'Restart')
+        PGM_TEAM ();
     end
 
 end

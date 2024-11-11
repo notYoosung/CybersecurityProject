@@ -78,11 +78,11 @@ function [decodedOutput] = Decoder_TEAM(encodedInput, key)
 
         end
 
-    endfor
+    end
 
     % If data to encode was given as char, output as char
     if strcmp(inputType, 'char')
         decodedOutput = decodedOutput{1, 1};
     end
 
-endfunction
+end

@@ -55,24 +55,24 @@ function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(unencryptedInput)
                 % Next index of string is random selection of alphanum pool
                 randSel = charPool(randi(size(charPool, 2)));
                 encryptedString = [encryptedString char(randSel)];
-            endfor
+            end
 
             % Next index of string is char from original string
             key(1, end + 1) = size(encryptedString, 2) + 1;
             encryptedString = [encryptedString, originalString(i)];
             % Store index for key
-        endfor
+        end
 
         % Re-populate end of string to prevent a the last char = last original char
         for sep = 1:randi(10)
             randSel = charPool(randi(size(charPool, 2)));
             encryptedString = [encryptedString char(randSel)];
-        endfor
+        end
 
         % Assign the aliases to their respective outputs
         encryptedOutput{1, iCell} = encryptedString;
         encryptedKeys{1, iCell} = key;
-    endfor
+    end
 
 
     % If data to encode was given as char, convert output to char & keys to vector matrix
@@ -81,4 +81,4 @@ function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(unencryptedInput)
         encryptedKeys = cell2mat(encryptedKeys{1, 1});
     end
 
-endfunction
+end
