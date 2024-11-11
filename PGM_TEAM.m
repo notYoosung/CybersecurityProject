@@ -22,6 +22,8 @@ function [excelSheet] = PGM_TEAM ()
         -------
         excelSheet: cell
             A copy of the excel sheet
+            Rows are patients, columns are data fields
+            By default, there are 6 fields ()
 %}
 
     % Housekeeping functions
@@ -113,49 +115,53 @@ function [excelSheet] = PGM_TEAM ()
         dataCell = Decrypt_TEAM (excelSheet((dataamt * 3 + 1):(dataamt * 4), index)', _cellstr2cell (excelSheet((dataamt * 4 + 1):(5 * dataamt), index)'));
     endfunction
 
+    % Wrapper function to handle saving data
     function [] = WriteSheet (dataCell, index)
         excelSheet(1:dataamt, index) = dataCell;
         WriteEncrypted (dataCell, index);
         WriteEncoded (dataCell, index);
     endfunction
 
+    % Encrypt and encode the initial patient data
     for i = 2:(size(excelSheet, 2))
         WriteEncoded (excelSheet(1:dataamt, i)', i);
         WriteEncrypted (excelSheet(1:dataamt, i)', i);
     endfor
 
-    option = questdlg('Create or read patient data? ', 'Menu', 'Create', 'Read', 'Read');
+    % Prompt a menu
+    menuOption = questdlg('Create or read patient data? ', 'Menu', 'Create', 'Read', 'Read');
 
-    switch option
+    switch menuOption
         case 'Create'
-
+            % List out and prompt patient fields
             prompts = {'Patient' 'Gender' 'DOB' 'Children' 'Allergies' 'Prescriptions'};
             patientData = inputdlg(prompts, 'Create Patient');
 
+            % Output patient information
             fprintf('Patient Data:\n');
-
             for j = 1:dataamt
                 fprintf('%10s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, size(excelSheet, 2))));
             endfor
 
+            % Save the data
             WriteSheet (patientData, size(excelSheet, 2) + 1);
             
             
         case 'Read'
+            % List out patient names and prompt a selection
             patients = excelSheet(1, 2:size(excelSheet, 2));
             [indx, isSelected] = listdlg('Name', 'Patient Selection', ...
                 'PromptString', {'Select a patient.'}, ...
                 'SelectionMode', 'single', ...
                 'ListString', patients);
 
-            if isSelected
+            if isSelected % Output patient information
                 fprintf('Patient Data:\n')
-
                 for j = 1:dataamt
                     fprintf('%15s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, indx + 1)));
                 end
             else
-                fprintf('exited')
+                fprintf('Exited')
             end
 
     end 
@@ -165,15 +171,14 @@ function [excelSheet] = PGM_TEAM ()
     excelSheet = excelSheet';
     xlswrite('Cybersecurity.xlsx', excelSheet);
 
-    exitChoice = questdlg('Thank you for using the program.', 'End of Program', 'Quit', 'Restart', 'Quit');
+    % Request exit
+    exitChoice = questdlg('Thank you for using the program. Do you wish to exit or run again?', 'End of Program', 'Quit', 'Restart', 'Quit');
 
-
-
+    % Handle cases
     switch exitChoice
         case 'Restart'
             PGM_TEAM ();
         case 'Quit'
-        otherwise
     end
 
 
