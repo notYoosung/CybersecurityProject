@@ -53,18 +53,20 @@ function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(unencryptedInput)
             % Populate string
             for sep = 1:sepLen
                 % Next index of string is random selection of alphanum pool
-                encryptedString(size(encryptedString, 2) + 1) = charPool(randi(size(charPool, 2)));
+                randSel = charPool(randi(size(charPool, 2)));
+                encryptedString = [encryptedString char(randSel)];
             endfor
 
             % Next index of string is char from original string
-            key{1, size(key, 2) + 1} = size(encryptedString, 2) + 1
-            encryptedString(size(encryptedString, 2) + 1) = originalString(i);
+            key(1, end + 1) = size(encryptedString, 2) + 1;
+            encryptedString = [encryptedString, originalString(i)];
             % Store index for key
         endfor
 
         % Re-populate end of string to prevent a the last char = last original char
         for sep = 1:randi(10)
-            encryptedString(size(encryptedString, 2) + 1) = charPool(randi(size(charPool, 2)));
+            randSel = charPool(randi(size(charPool, 2)));
+            encryptedString = [encryptedString char(randSel)];
         endfor
 
         % Assign the aliases to their respective outputs
