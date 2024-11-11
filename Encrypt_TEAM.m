@@ -1,5 +1,5 @@
 function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(input)
-    %{
+%{
         Encrypt_TEAM
             Mix a char array or a cell of char arrays with a random amount of random alphanumeric characters
 
@@ -16,7 +16,7 @@ function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(input)
             A vector matrix or cell of integer cells for respective keys for the output
             
         https://www.geeksforgeeks.org/python-docstrings/
-    %}
+%}
 
     % Compatibility for either batch-encoding a cell or encoding a single char array
     encodeType = class(input);

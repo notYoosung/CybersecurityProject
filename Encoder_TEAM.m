@@ -1,5 +1,5 @@
 function [encodedOutput, rotationOutput] = Encoder_TEAM(input, customRotation)
-    %{
+%{
         Encoder_TEAM
             Caesar-shift a char array or a cell of char arrays
 
@@ -18,11 +18,11 @@ function [encodedOutput, rotationOutput] = Encoder_TEAM(input, customRotation)
             An integer cell of respective rotations in case no custom rotation is given
             
         https://www.geeksforgeeks.org/python-docstrings/
-    %}
+%}
 
     % Compatibility for either batch-encoding a cell or encoding a single char array
-    encodeType = class(input);
-    if strcmp(encodeType, 'char')
+    inputType = class(input);
+    if strcmp(inputType, 'char')
         input = { input };
     end
 
@@ -59,14 +59,15 @@ function [encodedOutput, rotationOutput] = Encoder_TEAM(input, customRotation)
             % Alias for reference
             charCode = double(currString(stringIndex));
 
-            % Pre-declare (in case no match)
+            % Pre-declare (in case no rotation)
             rotatedCode = charCode;
 
             % `mod` returns remainder of division; constrains respective char to its case
             for iCase = 1:size(charPool, 1)
                 lowerRange = charPool(iCase, 1);
                 upperRange = charPool(iCase, 2);
-                if charCode >= lowerRange && charCode <= upperRange % Uppercase
+                % If within range, thene rotate
+                if charCode >= lowerRange && charCode <= upperRange 
                     rotatedCode = lowerRange + ... % Account for offset
                         mod(charCode + rotationOutput{1, cellIndex} - ... % Add the rotation to the char code
                         lowerRange, ... % Offset for `mod` to loop within the range
@@ -82,11 +83,8 @@ function [encodedOutput, rotationOutput] = Encoder_TEAM(input, customRotation)
     end
 
     % If data to encode was given as char, output as char
-    if strcmp(encodeType, 'char')
-        encodedOutput = encodedOutput{1, cellIndex};
+    if strcmp(inputType, 'char')
+        encodedOutput = encodedOutput{1, 1};
+        rotationOutput = cell2mat(rotationOutput);
     end
 end
-%{
-https://docs.octave.org/v4.0.0/Format-of-Descriptions.html#Format-of-Descriptions
-https://docs.octave.org/v4.0.0/Octave-Sources-_0028m_002dfiles_0029.html#Octave-Sources-_0028m_002dfiles_0029
-%}

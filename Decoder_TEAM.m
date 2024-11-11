@@ -1,40 +1,88 @@
-function [decryptedCell] = Decoder_TEAM(encryptedCell, keyCell)
-    decryptedCell = {};
+function [decodedOutput] = Decoder_TEAM(encodedInput, key)
+%{
+        Decoder_TEAM
+            Select characters from excrypted char matrices with a key
 
-    for i = 1:size(encryptedCell, 2)
-        decryptedCell{1, i} = '';
+        Parameters
+        ----------
+        encodedInput : char|cell
+            Intended to be first output of `Encoder_TEAM.m`. A Character array or character cell. 
+        key : vec|cell
+            Intended to be second output of `Encoder_TEAM.m`. Contains the indecies of the decrypted output.
 
-        if size(encryptedCell, 2) == 0
-            continue
-        endif
+        Returns
+        -------
+        decodedOutput: char|cell
+            Same data type as `encodedInput`.
+            
+%}
 
-        currRotation = keyCell{1, i};
+    % Compatibility for either batch-encoding a cell or encoding a single char array
+    inputType = class(encodedInput);
+    if strcmp(inputType, 'char')
+        encodedInput = { encodedInput };
+    end
+    if strcmp(class(key), 'double')
+        key = num2cell(key);
+    end
 
-        currString = encryptedCell{1, i};
+    % Ranges for alphanumeric cases
+    asciiUpper = [65 90];
+    asciiLower = [97 122];
+    asciiNumber = [48 57];
+    charPool = [asciiUpper; asciiLower; asciiNumber];
 
+    % Declare the output
+    decodedOutput = {};
+
+    % Loop through each input
+    for iInput = 1:size(encodedInput, 2)
+        % Declare respective output
+        decodedOutput{1, iInput} = '';
+
+        % Aliases for current indices
+        currRotation = key{1, iInput};
+        currString = encodedInput{1, iInput};
+
+        % If there's nothing, then skip
         if length(currString) == 0
             continue
         end
 
-        decryptedCell{1, i} = '';
+        % Alias for the current key
+        currKey = key{1, iInput};
 
-        for j = 1:length(currString)
-            asciiCode = double(currString(j));
+        % Go through the string and rotate the char codes
+        for iString = 1:length(currString)        
+            % Convert the char into its ASCII code
+            charCode = double(currString(iString));
 
-            if asciiCode >= 65 && asciiCode <= 90 % Uppercase
-                asciiRotated = 65 + mod(asciiCode - currRotation - 65, 26);
-            elseif asciiCode >= 97 && asciiCode <= 122 % Lowercase
-                asciiRotated = 97 + mod(asciiCode - currRotation - 97, 26);
-            elseif asciiCode >= 48 && asciiCode <= 57 % Numbers
-                asciiRotated = 48 + mod(asciiCode - currRotation - 48, 10);
-            else
-                asciiRotated = asciiCode;
-            endif
+            % Pre-declare (in case no rotation)
+            rotatedCode = charCode;
+            
 
-            decryptedCell{1, i}(j) = char(asciiRotated);
+            for iCase = 1:size(charPool, 1)
+                lowerRange = charPool(iCase, 1);
+                upperRange = charPool(iCase, 2);
+                % If within range, then rotate
+                if charCode >= lowerRange && charCode <= upperRange
+                    rotatedCode = lowerRange + ... % Account for offset
+                        mod(charCode - currKey - ... % Add the rotation to the char code
+                        lowerRange, ... % Offset for `mod` to loop within the range
+                        upperRange - lowerRange); % Total range to get remainder within
+                end
+            end
+
+            % After rotation, convert ASCII code to char
+            decodedOutput{1, iInput}(iString) = char(rotatedCode);
 
         end
 
     endfor
+
+    % If data to encode was given as char, output as char
+    if strcmp(inputType, 'char')
+        decodedOutput = decodedOutput{1, 1};
+    end
 
 endfunction
