@@ -1,17 +1,17 @@
-function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(input)
+function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(unencryptedInput)
 %{
         Encrypt_TEAM
             Mix a char array or a cell of char arrays with a random amount of random alphanumeric characters
 
         Parameters
         ----------
-        input : char|cell[char]
+        unencryptedInput : char|cell[char]
             Character array or character cell.
 
         Returns
         -------
         encryptedOutput: char|cell(char)
-            Char or char cell of random characters with the original input scattered within. Same data type as `input`.
+            Char or char cell of random characters with the original unencryptedInput scattered within. Same data type as `unencryptedInput`.
         encryptedKeys : mat|cell(int)
             A vector matrix or cell of integer cells for respective keys for the output
             
@@ -19,9 +19,9 @@ function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(input)
 %}
 
     % Compatibility for either batch-encoding a cell or encoding a single char array
-    encodeType = class(input);
+    encodeType = class(unencryptedInput);
     if strcmp(encodeType, 'char')
-        input = { input };
+        unencryptedInput = { unencryptedInput };
     end
 
     % Ranges for alphanumeric cases
@@ -35,8 +35,8 @@ function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(input)
     encryptedKeys = {};
 
     % Loop through the items to encrypt
-    for iCell = 1:size(input, 2)
-        originalString = input{1, iCell}
+    for iCell = 1:size(unencryptedInput, 2)
+        originalString = unencryptedInput{1, iCell};
         % Declare a new index in the outputs
         encryptedOutput{1, iCell} = {};
         encryptedKeys{1, iCell} = {};
@@ -45,7 +45,7 @@ function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(input)
         encryptedString = '';
         key = {};
 
-        % Loop through each input and add encryption
+        % Loop through each unencryptedInput and add encryption
         for i = 1:size(originalString, 2)
             % According to assignment, encrypt with up to 10 random separating characters
             sepLen = randi(10);
@@ -53,18 +53,18 @@ function [encryptedOutput, encryptedKeys] = Encrypt_TEAM(input)
             % Populate string
             for sep = 1:sepLen
                 % Next index of string is random selection of alphanum pool
-                encryptedString(length(encryptedString) + 1) = charPool(randi(length(charPool)));
+                encryptedString(size(encryptedString, 2) + 1) = charPool(randi(size(charPool, 2)));
             endfor
 
             % Next index of string is char from original string
-            encryptedString(length(encryptedString) + 1) = originalString(i);
+            key{1, size(key, 2) + 1} = size(encryptedString, 2) + 1
+            encryptedString(size(encryptedString, 2) + 1) = originalString(i);
             % Store index for key
-            key{1, size(key, 2) + 1} = length(encryptedString);
         endfor
 
         % Re-populate end of string to prevent a the last char = last original char
         for sep = 1:randi(10)
-            encryptedString(length(encryptedString) + 1) = charPool(randi(length(charPool)));
+            encryptedString(size(encryptedString, 2) + 1) = charPool(randi(size(charPool, 2)));
         endfor
 
         % Assign the aliases to their respective outputs

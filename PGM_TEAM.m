@@ -14,10 +14,25 @@
             https://docs.octave.org/v4.0.0/Octave-Sources-_0028m_002dfiles_0029.html#Octave-Sources-_0028m_002dfiles_0029
 %}
 function [excelSheet] = PGM_TEAM ()
+%{
+        PGM_TEAM
+            Create or read patient data. Internally encodes/decodes data
+
+        Returns
+        -------
+        excelSheet: cell
+            A copy of the excel sheet
+%}
+
+    % Housekeeping functions
     clear;
     clc;
+
+    % Necessary for GUI elements
+    % Run `pkg install -forge io` to get the module if it didn't come with installation
     pkg load io;
 
+    % To prevent need for downloading a sheet, create data on run
     excelSheet = {...
         'Patient', 'LUKE SKYWALKER', 'LEIA ORGANA', 'HAN SOLO';
         'Gender', 'Male', 'Female', 'Male';
@@ -26,8 +41,9 @@ function [excelSheet] = PGM_TEAM ()
         'Allergies', 'Grass, Mold', 'None', 'Carbonite, Wookie dander';
         'Prescriptions', 'Zocor, Daforce', 'None', 'Cymbalta';
     };
-    % xlswrite('Cybersecurity.xlsx', excelSheet);
 
+    % Unused, but tested for 
+    % https://stackoverflow.com/questions/181596/how-to-convert-a-column-number-e-g-127-into-an-excel-column-e-g-aa
     function Chars = toLetter(n)
         Chars = '';
 
@@ -38,25 +54,45 @@ function [excelSheet] = PGM_TEAM ()
 
     end
 
+    function strOut = _cell2str(cellInput)
+        strOut = '';
+        for i = 1:size(cellInput, 2) - 1
+            strOut = [strOut sprintf('%0.0f', cellInput{i}{1,1}) ','];
+        end
+        strOut = [strOut sprintf('%0.0f', cellInput{size(cellInput, 2)}{1,1})];
+    end
+    function cellOut = _str2cell(strInput)
+        cellOut = strsplit(strInput, ',');
+    end
+    function cellOut = cellstr2cell(cellstrInput)
+        cellOut = {};
+        for i = 1:size(cellstrInput, 2)
+            cellOut{1, i} = _str2cell(cellstrInput{1, i});
+        end
+    end
+
+    % Adjust 
     dataamt = 6;%size(excelSheet, 1);
     
     function [] = WriteXlsx (dataCell, cellIndex)
         for i = 1:size(dataCell, 1)
             for ii = 1:size(dataCell, 2)
                 C = [toLetter(ii+cellIndex) sprintf('%0.0f', i)];
-                xlswrite('Cybersecurity.xlsx', [ dataCell{i, ii} ], 'Sheet1', C);
+                if strcmp(class(dataCell{i, ii}), 'cell')
+                    dataCell{i, ii} = _cell2str(dataCell{i, ii})
+                end
+                disp({ dataCell{i, ii} })
+                xlswrite('Cybersecurity.xlsx', { dataCell{i, ii} }, 'Sheet1', C);
             endfor
         endfor
     endfunction
     % WriteXlsx (excelSheet, 0);
-    xlswrite('Cybersecurity.xlsx', excelSheet);
+    % xlswrite('Cybersecurity.xlsx', excelSheet);
 
     function [] = WriteEncoded (dataCell, index)
         [encoded, keys] = Encoder_TEAM (dataCell);
-        excelSheet((dataamt + 1):(2 * dataamt), index) = encoded;
+        excelSheet((    dataamt + 1):(2 * dataamt), index) = encoded;
         excelSheet((2 * dataamt + 1):(3 * dataamt), index) = keys;
-        xlswrite('Cybersecurity.xlsx', excelSheet);
-        
     endfunction
 
     function dataCell = ReadEncoded (index)
@@ -64,32 +100,35 @@ function [excelSheet] = PGM_TEAM ()
     endfunction
 
     function [] = WriteEncrypted (dataCell, index)
-        [encrypted, keys] = Encoder_TEAM (dataCell);
+        [encrypted, keys] = Encrypt_TEAM (dataCell);
         excelSheet((3 * dataamt + 1):(4 * dataamt), index) = encrypted;
-        excelSheet((4 * dataamt + 1):(5 * dataamt), index) = keys;
+        excelSheet((4 * dataamt + 1):(5 * dataamt), index) = _cell2str(keys);
     endfunction
 
     function dataCell = ReadEncrypted (index)
-        dataCell = Decrypt_TEAM (excelSheet((dataamt * 2 + 1):(dataamt * 3), index)', excelSheet((dataamt * 3 + 1):(4 * dataamt), index)');
+            disp((excelSheet((dataamt * 4 + 1):(5 * dataamt), index)'))
+            disp(cellstr2cell(excelSheet((dataamt * 4 + 1):(5 * dataamt), index)'))
+        dataCell = Decrypt_TEAM (excelSheet((dataamt * 3 + 1):(dataamt * 4), index)', cellstr2cell(excelSheet((dataamt * 4 + 1):(5 * dataamt), index)'));
     endfunction
+    WriteEncrypted({'q', 'w', 'e', 'r', 't', 'y'}, 3);
+    xlswrite('Cybersecurity.xlsx', excelSheet);
+    r = ReadEncrypted(3)
 
     function [] = WriteSheet (dataCell, index)
         excelSheet(1:dataamt, index) = dataCell;
         WriteEncrypted (dataCell, index);
         WriteEncoded (dataCell, index);
-        xlswrite('Cybersecurity.xlsx', excelSheet);
-
+        WriteXlsx (excelSheet(:, index), index);
     endfunction
 
     for i = 2:(size(excelSheet, 2))
         WriteEncoded (excelSheet(1:dataamt, i)', i);
         WriteEncrypted (excelSheet(1:dataamt, i)', i);
+        WriteXlsx (excelSheet(:, i), i);
     endfor
 
-    % xlswrite('Cybersecurity.xlsx', excelSheet');
 
     option = questdlg('Create or read patient data? ', 'Menu', 'Create', 'Read', 'Read');
-    % option = 'Create'
 
     outputMsg = '';
 
@@ -100,13 +139,14 @@ function [excelSheet] = PGM_TEAM ()
             patientData = inputdlg(prompts, 'Create Patient');
             encodedCell = Encoder_TEAM (patientData);
 
-            outputMsg = ['Patient Data:'];
-
-            WriteSheet (patientData, size(excelSheet, 2) + 1);
+            fprintf('Patient Data:\n');
 
             for j = 1:dataamt
-                outputMsg = [outputMsg; sprintf('%10s:\t %s', char(excelSheet(j, 1)), char(excelSheet(j, size(excelSheet, 2))))];
+                fprintf('%10s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, size(excelSheet, 2))));
             endfor
+
+            WriteSheet (patientData, size(excelSheet, 2) + 1);
+            
             
         case 'Read'
             patients = excelSheet(1, 2:size(excelSheet, 2));
@@ -116,55 +156,31 @@ function [excelSheet] = PGM_TEAM ()
                 'ListString', patients);
 
             if isSelected
-                outputMsg = 'Patient Data:\n';
+                fprintf('Patient Data:\n')
 
                 for j = 1:dataamt
-                    outputMsg = [outputMsg sprintf('%15s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, indx + 1)))];
+                    fprintf('%15s:\t %s\n', char(excelSheet(j, 1)), char(excelSheet(j, indx + 1)));
                 end
             else
                 fprintf('exited')
             end
 
-    end
-
-%create a random string 
-s = ['a':'z' '            '];
-textString = ['start ' s(randi(length(s),1,16200)) ' end'];
- 
- 
-%create panel1
-hPan1 = uipanel('FontSize',12,...
-    'BackgroundColor','white',...
-    'Position',[0 0 1 6]);
-pos = getpixelposition(hPan1);
- 
-%create textarea1
-jTA1 = uicomponent('Parent',hPan1,'style','javax.swing.jtextarea','tag','myObj','Units','pixels',...
-    'BackgroundColor',[0.6 0.6 0.6],'Opaque',0);
-jTA1.Position = pos;
-jTA1.Font = java.awt.Font('Helvetica', java.awt.Font.PLAIN, 22); % font name, style, size
-jTA1.Foreground = java.awt.Color(1,1,1);
-jTA1.Editable = 0;
-jTA1.LineWrap = 1;
-jTA1.WrapStyleWord = 1;
-jTA1.Text = textString;
-%adjust vertical position of jTextArea so the top of it aligns with top edge of figure frame
-%you may need to adjust the value of -5145 to match your screen size
-jTA1.Position = [pos(1) -5145 0.995*pos(3) pos(4)];
- 
-%attach and configure scroll panel
-hSP1 = attachScrollPanelTo(jTA1);
-hSP1.JavaPeer.getVerticalScrollBar.setPreferredSize(java.awt.Dimension(0,0));
- 
+    end 
 
 
-    exitChoice = questdlg(outputMsg, 'End of Program', 'Quit', 'Restart', 'Quit');
+    exitChoice = questdlg('Thank you for using the program.', 'End of Program', 'Quit', 'Restart', 'Quit');
+
+    % Realized the columns and rows were swapped, but transposing the sheet should function the same
+    excelSheet = excelSheet;
+    % xlswrite('Cybersecurity.xlsx', excelSheet);
+
 
     switch exitChoice
-        case 'Quit'
-            fprintf('Session ended\n')
         case 'Restart'
             PGM_TEAM ();
+        case 'Quit'
+        otherwise
     end
+
 
 end

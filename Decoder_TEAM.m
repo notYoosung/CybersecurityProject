@@ -45,7 +45,7 @@ function [decodedOutput] = Decoder_TEAM(encodedInput, key)
         currString = encodedInput{1, iInput};
 
         % If there's nothing, then skip
-        if length(currString) == 0
+        if size(currString, 2) == 0
             continue
         end
 
@@ -53,7 +53,7 @@ function [decodedOutput] = Decoder_TEAM(encodedInput, key)
         currKey = key{1, iInput};
 
         % Go through the string and rotate the char codes
-        for iString = 1:length(currString)        
+        for iString = 1:size(currString, 2)        
             % Convert the char into its ASCII code
             charCode = double(currString(iString));
 

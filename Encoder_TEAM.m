@@ -1,29 +1,27 @@
-function [encodedOutput, rotationOutput] = Encoder_TEAM(input, customRotation)
+function [encodedOutput, rotationOutput] = Encoder_TEAM(unencodedInput, customRotation)
 %{
         Encoder_TEAM
             Caesar-shift a char array or a cell of char arrays
 
         Parameters
         ----------
-        input : char|cell
+        unencodedInput : char|cell
             Character array or character cell.
         rotationOutput : integer (optional)
-            How much to rotate each input
+            How much to rotate each unencodedInput
 
         Returns
         -------
         encodedOutput: char|cell
-            Same data type as `input`. Caesar-shifted chars.
+            Same data type as `unencodedInput`. Caesar-shifted chars.
         rotationOutput : cell
             An integer cell of respective rotations in case no custom rotation is given
-            
-        https://www.geeksforgeeks.org/python-docstrings/
 %}
 
     % Compatibility for either batch-encoding a cell or encoding a single char array
-    inputType = class(input);
+    inputType = class(unencodedInput);
     if strcmp(inputType, 'char')
-        input = { input };
+        unencodedInput = { unencodedInput };
     end
 
     % Ranges for alphanumeric cases
@@ -38,24 +36,24 @@ function [encodedOutput, rotationOutput] = Encoder_TEAM(input, customRotation)
     rotationOutput = {};
 
     % Loop through the items to encode
-    for cellIndex = 1:size(input, 2)
+    for cellIndex = 1:size(unencodedInput, 2)
         % Alias for referencing the current indexed string
-        currString = input{1, cellIndex};
+        currString = unencodedInput{1, cellIndex};
 
         % If nothing to encode, then skip
-        if length(currString) == 0; continue; end
+        if size(currString, 2) == 0; continue; end
 
         % Declare the encoded counterpart
         encodedOutput{1, cellIndex} = '';
 
         if nargin == 2 % Check if a default rotation is set
             rotationOutput(1, cellIndex) = customRotation;
-        else % Otherwise, make a random rotation key (offset to prevent output = input)
+        else % Otherwise, make a random rotation key (offset to prevent output = unencodedInput)
             rotationOutput{1, cellIndex} = randi(24);
         end
 
         % Go char-by-char, encode alpha-num chars and leave others as-is
-        for stringIndex = 1:length(currString)
+        for stringIndex = 1:size(currString, 2)
             % Alias for reference
             charCode = double(currString(stringIndex));
 

@@ -41,7 +41,8 @@ function [decryptedOutput] = Decrypt_TEAM(encryptedInput, key)
 
         % Index each key as the output
         for j = 1:size(key{1, i}, 2)
-            decryptedOutput{1, i}(j) = encryptedInput{1, i}(key{1, i}{1, j});
+        fprintf('key%0.0f: %s\n', i, key{1, i}{1, j})
+            decryptedOutput{1, i}(j) = encryptedInput{1, i}(str2double(key{1, i}{1, j}));
         endfor
 
     endfor
