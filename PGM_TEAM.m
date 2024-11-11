@@ -114,7 +114,7 @@ function [excelSheet] = PGM_TEAM ()
     endfunction
 
     function [] = WriteEncrypted (dataCell, index)
-        [encrypted, keys] = Encrypt_TEAM (dataCell)
+        [encrypted, keys] = Encrypt_TEAM (dataCell);
         excelSheet((3 * dataamt + 1):(4 * dataamt), index) = encrypted;
         excelSheet((4 * dataamt + 1):(5 * dataamt), index) = _cellstr2cell (keys);
     endfunction
@@ -153,7 +153,7 @@ function [excelSheet] = PGM_TEAM ()
 
             % Save the data
             WriteSheet (patientData, size(excelSheet, 2) + 1);
-            
+
             
         case 'Read'
             % List out patient names and prompt a selection
@@ -180,7 +180,7 @@ function [excelSheet] = PGM_TEAM ()
     xlswrite('Cybersecurity.xlsx', excelSheet);
 
     % Request exit
-    exitChoice = questdlg('Thank you for using the program. Do you wish to exit or run again?', 'End of Program', 'Quit', 'Restart', 'Quit');
+    exitChoice = questdlg('Do you wish to exit or run again?', 'End of Program', 'Quit', 'Restart', 'Quit');
 
     % Handle cases
     switch exitChoice
@@ -188,6 +188,5 @@ function [excelSheet] = PGM_TEAM ()
             PGM_TEAM ();
         case 'Quit'
     end
-
 
 end
